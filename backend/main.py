@@ -2,10 +2,11 @@ import random
 from backend import (efeitos_armaduras, efeitos_armas, efeitos_defesas, efeitos_equipamentos,
                      geral, municao, tipos_armas, tipos_armaduras, tipos_defesas)
 
-def gerar_item():
+def gerar_item(fixos):
     gold = 0
-    tipo_equipamento = random.choice(geral.tipo_equipamento)
-    tipo_dado = random.choice(geral.tipo_de_dado)
+    tipo_equipamento = random.choice(geral.tipo_equipamento) if fixos['categoria_equipamento'] == ''\
+        else fixos['categoria_equipamento']
+    tipo_dado = random.choice(geral.tipo_de_dado) if fixos['tipo_dado'] == '' else fixos['tipo_dado']
     quantidade_dado = random.randint(1, geral.dado_max[tipo_equipamento])
     gold += geral.custo_dado[tipo_equipamento][tipo_dado] * quantidade_dado
     raridade = geral.raridade_por_dado[tipo_dado]
@@ -36,7 +37,10 @@ def gerar_item():
     tipos_equipamentos.update(tipos_armaduras.tipo_armaduras)
     tipos_equipamentos.update(tipos_armas.tipos_armas)
     tipos_equipamentos.update(tipos_defesas.tipo_defesas)
-    equip = random.choice(tipos_equipamentos[tipo_equipamento])
+    tipos_equipamentos = tipos_equipamentos[tipo_equipamento]
+    tipos_equipamentos = [t for t in tipos_equipamentos if t['Tipo'] == fixos['tipo_equipamento']]\
+        if fixos['tipo_equipamento'] != '' else tipos_equipamentos
+    equip = random.choice(tipos_equipamentos)
     texto_equip = ""
     for chave, valor in equip.items():
         if chave != "Gold":
@@ -62,4 +66,36 @@ def gerar_item():
     print('Gold total do item gerado: ', gold)
 
 if __name__ == "__main__":
-    gerar_item()
+    fixos = {
+        'categoria_equipamento': 'Defesa', # Arma, Armadura, Defesa
+        'tipo_dado': 'd10', # d6, d8, d10, d12, d20
+        'tipo_equipamento': 'Broquel'
+        # Adaga
+        # Arco
+        # Armas de Fogo
+        # Balista
+        # Bastão
+        # Besta
+        # Corrente
+        # Espada
+        # Foice
+        # Lança
+        # Machado
+        # Maça
+        # Manopla
+        # Martelo
+
+        # Broquel
+        # Heater
+        # Micênico
+        # Torre
+
+        # Cota
+        # Hoplita
+        # Couraça
+        # Escamas
+        # Placas
+
+    }
+
+    gerar_item(fixos)
